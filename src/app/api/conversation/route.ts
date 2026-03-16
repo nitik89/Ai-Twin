@@ -1,25 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 
 export async function GET() {
   try {
-    const userId = process.env.HARDCODED_USER_ID!;
+    const session = await auth();
+    const userId = session?.user?.id;
 
     if (!userId) {
-      return NextResponse.json(
-        { error: "HARDCODED_USER_ID not set" },
-        { status: 500 },
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // First ensure user exists — create if not
-    await prisma.user.upsert({
-      where: { id: userId },
-      update: {},
-      create: { id: userId },
-    });
-
-    // Then find or create conversation
+    // Find or create conversation
     let conversation = await prisma.conversation.findFirst({
       where: { userId },
       orderBy: { createdAt: "desc" },

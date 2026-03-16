@@ -4,9 +4,18 @@ import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
 import { generateEmbeddings, storeEmbedding } from "@/lib/embeddings";
 import { searchSimilarMessages } from "@/lib/semantic-search";
+import { auth } from "@/auth";
 
 export async function POST(req: Request) {
   try {
+    // Get session
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await req.json();
     const messages = body.messages;
     const rawConversationId =
@@ -15,8 +24,6 @@ export async function POST(req: Request) {
       typeof rawConversationId === "string"
         ? rawConversationId
         : rawConversationId?.id;
-
-    const userId = process.env.HARDCODED_USER_ID!;
 
     // Fetch behaviour profile
     const profile = await prisma.behaviourProfile.findUnique({
@@ -142,7 +149,7 @@ export async function POST(req: Request) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               message: userText,
-              userId: process.env.HARDCODED_USER_ID,
+              userId,
             }),
           }).catch((err) => console.error("Behaviour extraction failed:", err));
         }

@@ -3,9 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import ChatNavbar from "@/components/ChatNavbar";
 import LoadingDots from "@/components/LoadingDots";
-import ChatMessageList, { type ChatMessage } from "@/components/ChatMessageList";
+import ChatMessageList, {
+  type ChatMessage,
+} from "@/components/ChatMessageList";
 import ChatInput from "@/components/ChatInput";
 
 type DBMessage = {
@@ -25,6 +29,8 @@ export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isLoadingConversation, setIsLoadingConversation] = useState(true);
+  const { data: session } = useSession();
+  const router = useRouter();
 
   const { messages, sendMessage, status, setMessages } = useChat({
     transport: new DefaultChatTransport({
@@ -33,6 +39,19 @@ export default function Home() {
   });
 
   const isLoading = status === "streaming" || status === "submitted";
+
+  // Check if user has completed onboarding
+  useEffect(() => {
+    const checkOnboarded = async () => {
+      if (!session?.user?.id) return;
+      const res = await fetch("/api/me");
+      const data = await res.json();
+      if (!data.onboarded) {
+        router.push("/onboarding");
+      }
+    };
+    checkOnboarded();
+  }, [session, router]);
 
   useEffect(() => {
     const fetchConversation = async () => {
