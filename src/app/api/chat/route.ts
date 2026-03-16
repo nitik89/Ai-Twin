@@ -65,7 +65,11 @@ export async function POST(req: Request) {
     const ragContext =
       similarMessages.length > 0
         ? `\n\nRelevant context from past conversations:\n${similarMessages
-            .map((m) => `- ${m.content}`)
+            .map((m) =>
+              m.source === "memory"
+                ? `- [Long term memory] ${m.content}`
+                : `- ${m.content}`,
+            )
             .join("\n")}`
         : "";
 
@@ -120,15 +124,40 @@ export async function POST(req: Request) {
           ),
         ]).catch((err) => console.error("Embedding storage failed:", err));
 
-        // Call behaviour extraction in background
-        fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/behaviour`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: userText,
-            userId: process.env.HARDCODED_USER_ID,
-          }),
-        }).catch((err) => console.error("Behaviour extraction failed:", err));
+        // Count user messages in this conversation
+        const messageCount = await prisma.message.count({
+          where: {
+            conversationId,
+            role: Role.USER,
+          },
+        });
+
+        const isLongMessage = userText.split(" ").length > 100;
+        const isEvery10 = messageCount % 10 === 0;
+
+        // Only extract behaviour every 10 messages or if message is long
+        if (isLongMessage || isEvery10) {
+          fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/behaviour`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: userText,
+              userId: process.env.HARDCODED_USER_ID,
+            }),
+          }).catch((err) => console.error("Behaviour extraction failed:", err));
+        }
+
+        // Trigger summarisation every 20 messages
+        if (messageCount >= 20 && messageCount % 20 === 0) {
+          fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/summarise`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              conversationId,
+              userId,
+            }),
+          }).catch((err) => console.error("Summarisation failed:", err));
+        }
       },
     });
 
