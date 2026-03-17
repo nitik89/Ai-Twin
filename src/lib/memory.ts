@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { generateEmbeddings } from "./embeddings";
+
 export async function shouldSummarise(
   conversationId: string,
 ): Promise<boolean> {
@@ -15,6 +16,7 @@ export async function summariseConversation(
   conversationId: string,
   userId: string,
 ): Promise<void> {
+  console.log("We are summarising the chats!!");
   const messages = await prisma.message.findMany({
     where: { conversationId },
     orderBy: { createdAt: "asc" },
@@ -65,13 +67,28 @@ export async function summariseConversation(
     },
   });
 
+  // Store embedding
   const embedding = await generateEmbeddings(summary);
-
   await prisma.$executeRaw`
-  UPDATE "Memory"
-  SET embedding = ${JSON.stringify(embedding)}::vector
-  WHERE id = ${memory.id}
-`;
+    UPDATE "Memory"
+    SET embedding = ${JSON.stringify(embedding)}::vector
+    WHERE id = ${memory.id}
+  `;
 
-  console.log("Memory created for conversation:", conversationId);
+  // Extract behaviour from summary — richest signal
+  fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/behaviour`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: summary,
+      userId,
+    }),
+  }).catch((err) =>
+    console.error("Behaviour extraction from summary failed:", err),
+  );
+
+  console.log(
+    "Memory created and behaviour extracted for conversation:",
+    conversationId,
+  );
 }

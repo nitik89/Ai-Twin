@@ -24,6 +24,7 @@ model User {
   bio           String?
   username      String?   @unique
   onboarded     Boolean   @default(false)
+  twinScore     Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -32,6 +33,7 @@ model User {
   conversations Conversation[]
   profile       BehaviourProfile?
   memories      Memory[]
+  dilemmas      DailyDilemma[]
 }
 
 model Account {
@@ -125,6 +127,24 @@ model Memory {
   timeframe String
   topics    String?
   embedding Unsupported("vector(3072)")?
+
+  @@index([userId])
+}
+
+model DailyDilemma {
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+
+  question   String
+  optionA    String
+  optionB    String
+  optionC    String
+  optionD    String
+  answer     String?
+  answeredAt DateTime?
 
   @@index([userId])
 }
