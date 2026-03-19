@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { summariseConversation } from "@/lib/memory";
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";

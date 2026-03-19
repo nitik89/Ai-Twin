@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { auth } from "@/auth";
 import { generateEmbeddings, storeEmbedding } from "@/lib/embeddings";
 import { prisma } from "@/lib/prisma";
