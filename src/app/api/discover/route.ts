@@ -68,7 +68,7 @@ Do NOT base questions on their current topics of interest or conversations.
 Focus purely on CHARACTER, VALUES, PERSONALITY, and THINKING STYLE.
 
 SECTION 1 — ONE situational dilemma:
-- A real life or workplace scenario with genuine moral tension
+- A real life scenario with genuine moral tension it should be related to this person's hobbies 
 - 4 distinct options that each reveal something different about the person
 - Should probe values we haven't captured yet — honesty, loyalty, ambition, courage, fairness
 - Must feel real and relatable — not hypothetical or abstract

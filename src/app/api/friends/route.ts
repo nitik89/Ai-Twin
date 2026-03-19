@@ -40,7 +40,7 @@ async function calculateReadinessScore(friendId: string): Promise<number> {
   const memories = Math.min(20, memoryCount * 4);
   const onboarding = user?.bio ? 20 : user?.username ? 10 : 0;
 
-  return 80;
+  return messages + profileScore + memories + onboarding;
 }
 
 export async function GET() {
