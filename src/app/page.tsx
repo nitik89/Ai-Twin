@@ -43,7 +43,10 @@ export default function Home() {
     }),
   });
 
-  const isLoading = status === "streaming" || status === "submitted";
+  const isLoading =
+    status === "submitted" ||
+    (status === "streaming" &&
+      messages[messages.length - 1]?.role !== "assistant");
 
   // Check onboarding
   useEffect(() => {
