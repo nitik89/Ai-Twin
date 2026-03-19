@@ -28,7 +28,7 @@ export default function LoginPage() {
 
           {/* Google Sign In */}
           <button
-            onClick={() => signIn("google", { callbackUrl: "/onboarding" })}
+            onClick={() => signIn("google", { callbackUrl: "/" })}
             className="flex w-full items-center justify-center gap-3 rounded-full border border-gray-700 bg-gray-800 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-gray-700"
           >
             <svg

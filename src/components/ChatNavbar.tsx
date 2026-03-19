@@ -2,6 +2,7 @@
 
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function ChatNavbar() {
   const { data: session } = useSession();
@@ -26,6 +27,25 @@ export default function ChatNavbar() {
           </span>
           <span className="text-xs font-medium text-emerald-400">online</span>
         </div>
+
+        <Link
+          href="/discover"
+          className="text-xs text-gray-400 hover:text-white transition-colors"
+        >
+          Discover
+        </Link>
+        <Link
+          href="/friends"
+          className="text-xs text-gray-400 hover:text-white transition-colors"
+        >
+          Friends
+        </Link>
+        <Link
+          href="/mirror"
+          className="text-xs text-gray-400 hover:text-white transition-colors"
+        >
+          Mirror
+        </Link>
 
         <div className="flex items-center gap-2">
           {session?.user?.image && (

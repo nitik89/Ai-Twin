@@ -139,8 +139,9 @@ export async function POST(req: Request) {
           },
         });
 
-        const isLongMessage = userText.split(" ").length > 100;
+        const isLongMessage = userText.split(" ").length > 30;
         const isEvery10 = messageCount % 10 === 0;
+        console.log("islong message", userText.split(" ").length);
 
         // Only extract behaviour every 10 messages or if message is long
         if (isLongMessage || isEvery10) {
