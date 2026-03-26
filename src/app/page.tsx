@@ -114,9 +114,9 @@ export default function Home() {
       setHasMore(data.hasMore);
       setPage(nextPage);
 
-      if (data.messages.length > 0) {
+      if (data?.messages.length > 0) {
         setMessages((prev) => [
-          ...data.messages.map((m: DBMessage) => ({
+          ...data?.messages.map((m: DBMessage) => ({
             id: m.id,
             role: m.role === "USER" ? "user" : "assistant",
             content: m.content,
