@@ -4,7 +4,7 @@ type ChatInputProps = {
   onSubmit: (e: React.FormEvent) => void;
   isLoading: boolean;
 };
-
+//Hello
 export default function ChatInput({
   inputValue,
   onInputChange,
