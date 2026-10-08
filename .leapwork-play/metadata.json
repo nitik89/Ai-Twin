@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-08T10:46:39.285Z",
+  "generatedAt": "2026-10-08T10:49:40.378Z",
   "repo": {
     "connectorId": 16,
     "repoSlug": "nitik89/Ai-Twin",
@@ -18,6 +18,13 @@
       "name": "New test case",
       "kind": "test-case",
       "repoPath": "TC-1-New-test-case.spec.ts"
+    },
+    {
+      "assetId": 169,
+      "displayId": "TC-2",
+      "name": "New test case",
+      "kind": "test-case",
+      "repoPath": "TC-2-New-test-case.spec.ts"
     }
   ],
   "files": [
@@ -27,6 +34,14 @@
       "displayId": "TC-1",
       "name": "New test case",
       "repoPath": "TC-1-New-test-case.spec.ts",
+      "parentAssetId": 28
+    },
+    {
+      "assetId": 169,
+      "assetKind": "test-case",
+      "displayId": "TC-2",
+      "name": "New test case",
+      "repoPath": "TC-2-New-test-case.spec.ts",
       "parentAssetId": 28
     }
   ]
